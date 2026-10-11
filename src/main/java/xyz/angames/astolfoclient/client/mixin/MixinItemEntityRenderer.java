@@ -59,20 +59,20 @@ public abstract class MixinItemEntityRenderer {
                if (isBlock) {
                   matrixStack.translate(0.0F, -0.05F, 0.0F);
                   if (!isOnGround) {
-                     matrixStack.mulPose(Axis.XP.rotationDegrees(age));
-                     matrixStack.mulPose(Axis.YP.rotationDegrees(age));
+                     matrixStack.rotate(Axis.XP.rotationDegrees(age));
+                     matrixStack.rotate(Axis.YP.rotationDegrees(age));
                   } else {
-                     matrixStack.mulPose(Axis.YP.rotationDegrees(itemEntity.getId() * 45.0F));
+                     matrixStack.rotate(Axis.YP.rotationDegrees(itemEntity.getId() * 45.0F));
                   }
                } else {
                   matrixStack.translate(0.0F, -0.1F, 0.0F);
                   if (!isOnGround) {
-                     matrixStack.mulPose(Axis.XP.rotationDegrees(age));
-                     matrixStack.mulPose(Axis.YP.rotationDegrees(age));
-                     matrixStack.mulPose(Axis.ZP.rotationDegrees(age));
+                     matrixStack.rotate(Axis.XP.rotationDegrees(age));
+                     matrixStack.rotate(Axis.YP.rotationDegrees(age));
+                     matrixStack.rotate(Axis.ZP.rotationDegrees(age));
                   } else {
-                     matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-                     matrixStack.mulPose(Axis.ZP.rotationDegrees(itemEntity.getId() * 73.0F));
+                     matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+                     matrixStack.rotate(Axis.ZP.rotationDegrees(itemEntity.getId() * 73.0F));
                   }
                }
 

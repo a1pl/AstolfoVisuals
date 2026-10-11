@@ -16,7 +16,7 @@ import xyz.angames.astolfoclient.client.module.Module;
 public class MouseMixin {
    @Inject(method = "onButton", at = @At("HEAD"))
    private void onMouseButton(long window, net.minecraft.client.input.MouseButtonInfo buttonInfo, int action, CallbackInfo ci) {
-      int button = buttonInfo.button();
+      int button = xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(buttonInfo.button());
       Minecraft client = Minecraft.getInstance();
       if (action == 1 && client.gui.screen() == null && AstolfoclientClient.moduleManager != null) {
          int mappedKey = -(button + 100);

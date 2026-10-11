@@ -1,10 +1,11 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <mre:common.glsl>
+#include <mre:common.glsl>
 
-in vec2 FragCoord;
-in vec2 TexCoord;
-in vec4 FragColor;
+layout(location = 0) in vec2 FragCoord;
+layout(location = 1) in vec2 TexCoord;
+layout(location = 2) in vec4 FragColor;
 
 uniform sampler2D Sampler0;
 layout(std140) uniform MreParams {
@@ -23,7 +24,7 @@ layout(std140) uniform MreParams {
 };
 
 
-out vec4 OutColor;
+layout(location = 0) out vec4 OutColor;
 
 float roundedBoxSDF(vec2 p, vec2 b, vec4 r, float smoothness) {
     r.xy = (p.x > 0.0) ? r.xy : r.zw;

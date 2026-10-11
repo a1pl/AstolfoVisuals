@@ -1,25 +1,30 @@
 package dev.sxmurxy.mre.utils;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import dev.sxmurxy.mre.providers.ResourceProvider;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public final class CRenderPipelines {
 
+    /** Forces class initialisation so the pipelines are registered before the first resource reload. */
+    public static void init() {
+    }
+
     public static final BindGroupLayout PARAMS = BindGroupLayout.builder()
         .withUniform("MreParams", UniformType.UNIFORM_BUFFER).build();
 
     private static RenderPipeline create(String name, VertexFormat format, boolean sampler) {
         RenderPipeline.Builder b = RenderPipeline.builder(RenderPipelines.GLOBALS_SNIPPET)
-            .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
             .withBindGroupLayout(PARAMS)
             .withLocation(ResourceProvider.id("pipeline/" + name))
             .withVertexShader(ResourceProvider.getShaderIdentifier(name))
@@ -32,7 +37,7 @@ public final class CRenderPipelines {
             b.withBindGroupLayout(BindGroupLayouts.SAMPLER0);
         }
 
-        return b.build();
+        return RenderPipelines.registerOptional(b.build());
     }
 
     public static final RenderPipeline RECTANGLE_PIPLINE = create("rectangle", DefaultVertexFormat.POSITION_COLOR, false);

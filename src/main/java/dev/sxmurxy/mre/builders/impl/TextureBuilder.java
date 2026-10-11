@@ -1,7 +1,7 @@
 package dev.sxmurxy.mre.builders.impl;
 
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 
 import dev.sxmurxy.mre.builders.AbstractBuilder;
 import dev.sxmurxy.mre.builders.states.QuadColorState;

@@ -6,8 +6,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -21,19 +23,21 @@ import xyz.angames.astolfoclient.client.module.modules.render.HandPositionModule
 import xyz.angames.astolfoclient.client.module.modules.render.SwingAnimationModule;
 
 @Environment(EnvType.CLIENT)
-@Mixin(ItemInHandRenderer.class)
+@Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class HeldItemRendererMixin {
    @Inject(method = "submitHandsWithItems", at = @At("HEAD"))
-   private void onSubmitHandsHead(float frameInterp, PoseStack poseStack, SubmitNodeCollector collector, LocalPlayer player, int light, CallbackInfo ci) {
+   private void onSubmitHandsHead(float frameInterp, PoseStack poseStack, SubmitNodeCollector collector, PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState state, CallbackInfo ci) {
       SwingAnimationModule swingAnim = (SwingAnimationModule)ModuleManager.getModule(SwingAnimationModule.class);
-      if (swingAnim != null) {
-         swingAnim.updatePhysics(player, frameInterp);
+      Minecraft mc = Minecraft.getInstance();
+      if (swingAnim != null && mc.player != null && playerState.avatarRenderState != null) {
+         swingAnim.updatePhysics(mc.player, frameInterp, playerState.avatarRenderState.swingAnimation);
       }
    }
 
    @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
    private void onSubmitArmWithItem(
-      AbstractClientPlayer player,
+      PlayerRenderState playerState,
+      FirstPersonHandsAndItemsRenderState state,
       float frameInterp,
       float xRot,
       InteractionHand hand,
@@ -49,18 +53,20 @@ public abstract class HeldItemRendererMixin {
       HandPositionModule handMod = (HandPositionModule)ModuleManager.getModule(HandPositionModule.class);
       boolean swingEnabled = swingMod != null && swingMod.isEnabled();
       boolean handEnabled = handMod != null && handMod.isEnabled();
-      if ((swingEnabled || handEnabled) && !item.isEmpty() && !item.has(DataComponents.MAP_ID)) {
+      if ((swingEnabled || handEnabled) && !item.isEmpty() && !item.has(DataComponents.MAP_ID) && Minecraft.getInstance().player != null) {
          ci.cancel();
          if (swingMod != null) {
+            SwingAnimationModule.currentItemState = hand == InteractionHand.MAIN_HAND ? state.mainHandRenderState : state.offHandRenderState;
+            SwingAnimationModule.currentPlayerState = playerState;
             // inverseArmHeight is 1 - equip progress.
-            swingMod.handleRenderItem(player, frameInterp, xRot, hand, attack, item, 1.0F - inverseArmHeight, poseStack, collector, light);
+            swingMod.handleRenderItem(Minecraft.getInstance().player, frameInterp, xRot, hand, attack, item, 1.0F - inverseArmHeight, poseStack, collector, light);
          }
       }
    }
 
    @Inject(method = "renderPlayerArm", at = @At("HEAD"))
    private void onRenderPlayerArmHead(
-      PoseStack poseStack, SubmitNodeCollector collector, int light, float inverseArmHeight, float attack, HumanoidArm arm, CallbackInfo ci
+      PoseStack poseStack, SubmitNodeCollector collector, int light, float inverseArmHeight, float attack, HumanoidArm arm, PlayerRenderState playerState, CallbackInfo ci
    ) {
       if (!SwingAnimationModule.renderingCustomItem) {
          HandPositionModule handMod = (HandPositionModule)ModuleManager.getModule(HandPositionModule.class);

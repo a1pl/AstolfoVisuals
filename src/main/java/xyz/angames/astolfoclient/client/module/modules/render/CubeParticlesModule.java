@@ -1,7 +1,7 @@
 package xyz.angames.astolfoclient.client.module.modules.render;
 
 import xyz.angames.astolfoclient.client.compat.Vtx;
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import xyz.angames.astolfoclient.client.compat.DestFactor;
 import xyz.angames.astolfoclient.client.compat.SourceFactor;
 import xyz.angames.astolfoclient.client.compat.RenderSystem;
@@ -24,7 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.client.Camera;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -154,7 +154,7 @@ public class CubeParticlesModule extends Module {
                      int color = this.withAlpha(particleColor, alpha * 0.45F);
                      ms.pushPose();
                      ms.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
-                     ms.mulPose(camera.rotation());
+                     ms.rotate(camera.rotation());
                      this.drawBillboardQuad(ms, bloomBuffer, -quadSize * 0.5F, -quadSize * 0.5F, quadSize, quadSize, color);
                      ms.popPose();
                   }
@@ -190,7 +190,7 @@ public class CubeParticlesModule extends Module {
                      float effectiveAlpha = alpha * faceAlphaVal;
                      ms.pushPose();
                      ms.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
-                     ms.mulPose(new Quaternionf().rotationXYZ((float)rotX, (float)rotY, (float)rotZ));
+                     ms.rotate(new Quaternionf().rotationXYZ((float)rotX, (float)rotY, (float)rotZ));
                      ms.scale(particleSize, particleSize, particleSize);
                      this.renderUnitCubeFaces(ms, faceBuffer, particleColor, effectiveAlpha);
                      ms.popPose();
@@ -227,7 +227,7 @@ public class CubeParticlesModule extends Module {
                      Color particleColor = this.getColor(p.creationTime);
                      ms.pushPose();
                      ms.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
-                     ms.mulPose(new Quaternionf().rotationXYZ((float)rotX, (float)rotY, (float)rotZ));
+                     ms.rotate(new Quaternionf().rotationXYZ((float)rotX, (float)rotY, (float)rotZ));
                      ms.scale(particleSize, particleSize, particleSize);
                      if (renderCore) {
                         int diagColor = this.withAlpha(particleColor, alpha * 0.35F);

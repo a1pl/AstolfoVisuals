@@ -18,7 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -83,10 +83,10 @@ public class ParticleRenderer {
                            y - context.camera().position().y,
                            z - context.camera().position().z
                         );
-                        matrixStack.mulPose(context.camera().rotation());
+                        matrixStack.rotate(context.camera().rotation());
                         float finalScale = particle.scale / 2.5F;
                         matrixStack.scale(finalScale, finalScale, finalScale);
-                        matrixStack.mulPose(Axis.ZP.rotationDegrees(particle.rotation + (float)age * 0.1F));
+                        matrixStack.rotate(Axis.ZP.rotationDegrees(particle.rotation + (float)age * 0.1F));
                         Matrix4f matrix = matrixStack.last().pose();
                         Vtx.vertex(buffer, matrix, -0.5F, -0.5F, 0.0F).setUv(0.0F, 1.0F).setColor(r, g, b, alpha);
                         Vtx.vertex(buffer, matrix, 0.5F, -0.5F, 0.0F).setUv(1.0F, 1.0F).setColor(r, g, b, alpha);

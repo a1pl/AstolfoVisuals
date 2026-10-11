@@ -34,7 +34,7 @@ public class KeyUtils {
 
       for (int i = 0; i < 350; i++) {
          try {
-            Key key = Type.KEYSYM.getOrCreate(i);
+            Key key = Type.KEYBOARD.getOrCreate(xyz.angames.astolfoclient.client.compat.KeyMap.glfwToSdl(i));
             String name = key.getName();
             if (name != null && !name.isEmpty() && !name.contains("unknown")) {
                String simpleName = name.replace("key.keyboard.", "").toUpperCase();

@@ -1,6 +1,6 @@
 package xyz.angames.astolfoclient.client.compat;
 
-import com.mojang.blaze3d.platform.BlendFactor;
+import com.mojang.renderpearl.api.pipeline.BlendFactor;
 
 /** Legacy GlStateManager.SourceFactor, mapped onto 26.x blend factors. */
 public enum SourceFactor {

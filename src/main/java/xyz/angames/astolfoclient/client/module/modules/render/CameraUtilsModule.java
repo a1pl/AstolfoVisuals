@@ -77,7 +77,7 @@ public class CameraUtilsModule extends Module {
          Minecraft mc = Minecraft.getInstance();
          boolean isKeyDown = false;
          if (mc != null && mc.gui.screen() == null && this.zoomKey.getKey() != -1 && this.zoomKey.getKey() != 0) {
-            isKeyDown = InputConstants.isKeyDown(mc.getWindow(), this.zoomKey.getKey());
+            isKeyDown = InputConstants.isKeyDown(xyz.angames.astolfoclient.client.compat.KeyMap.glfwToSdl(this.zoomKey.getKey()));
          }
 
          if (this.smoothMouse.get() && mc != null && mc.options != null) {

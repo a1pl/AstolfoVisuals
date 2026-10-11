@@ -1,4 +1,5 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
 layout(std140) uniform CustomUniforms {
     vec2 uResolution;
@@ -6,11 +7,11 @@ layout(std140) uniform CustomUniforms {
     vec3 uThemeColor;
 };
 
-in vec4 vertexColor;
-in vec2 texCoord0;
+layout(location = 0) in vec4 vertexColor;
+layout(location = 1) in vec2 texCoord0;
 
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
 vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}

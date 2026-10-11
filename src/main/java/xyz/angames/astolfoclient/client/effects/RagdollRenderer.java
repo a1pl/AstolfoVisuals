@@ -22,7 +22,7 @@ import xyz.angames.astolfoclient.client.compat.ShaderProgram;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -275,6 +275,11 @@ public class RagdollRenderer {
 
    @Environment(EnvType.CLIENT)
    public static class SnapshotVertexConsumer implements VertexConsumer {
+      @Override
+      public VertexConsumer setUv3(float u, float v) {
+         return this;
+      }
+
       @Override
       public VertexConsumer setLineWidth(float width) {
          return this;

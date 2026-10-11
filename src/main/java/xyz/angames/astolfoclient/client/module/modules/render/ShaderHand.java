@@ -1,7 +1,7 @@
 package xyz.angames.astolfoclient.client.module.modules.render;
 
 import xyz.angames.astolfoclient.client.compat.GlCompat;
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import xyz.angames.astolfoclient.client.compat.DestFactor;
 import xyz.angames.astolfoclient.client.compat.SourceFactor;
 import xyz.angames.astolfoclient.client.compat.RenderSystem;

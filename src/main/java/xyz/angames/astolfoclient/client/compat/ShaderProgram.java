@@ -1,7 +1,7 @@
 package xyz.angames.astolfoclient.client.compat;
 
 import com.mojang.blaze3d.buffers.Std140Builder;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

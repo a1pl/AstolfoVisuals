@@ -177,17 +177,17 @@ public class HudEditorScreen extends Screen {
 
    @Override
    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-      return this.mouseClicked(event.x(), event.y(), event.button());
+      return this.mouseClicked(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()));
    }
 
    @Override
    public boolean mouseReleased(MouseButtonEvent event) {
-      return this.mouseReleased(event.x(), event.y(), event.button());
+      return this.mouseReleased(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()));
    }
 
    @Override
    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-      return this.mouseDragged(event.x(), event.y(), event.button(), dx, dy);
+      return this.mouseDragged(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()), dx, dy);
    }
 
    public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -220,7 +220,7 @@ public class HudEditorScreen extends Screen {
          this.currentlyDraggedManager = AstolfoclientClient.targetHudManager;
          return true;
       } else {
-         return super.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
+         return super.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)), false);
       }
    }
 
@@ -292,7 +292,7 @@ public class HudEditorScreen extends Screen {
          activeHLine = false;
       }
 
-      return super.mouseDragged(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), deltaX, deltaY);
+      return super.mouseDragged(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)), deltaX, deltaY);
    }
 
    public boolean mouseReleased(double mouseX, double mouseY, int button) {
@@ -335,7 +335,7 @@ public class HudEditorScreen extends Screen {
       }
 
       this.currentlyDraggedManager = null;
-      return super.mouseReleased(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)));
+      return super.mouseReleased(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)));
    }
 
    @Override

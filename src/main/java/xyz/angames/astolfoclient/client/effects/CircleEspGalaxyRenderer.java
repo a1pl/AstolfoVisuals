@@ -18,7 +18,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.resources.Identifier;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -84,7 +84,7 @@ public class CircleEspGalaxyRenderer {
                         tY - context.camera().position().y,
                         tZ - context.camera().position().z
                      );
-                     matrices.mulPose(Axis.YP.rotationDegrees(animTime * 45.0F));
+                     matrices.rotate(Axis.YP.rotationDegrees(animTime * 45.0F));
                      RenderSystem.setShaderTexture(0, BLOOM_TEXTURE);
                      RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
                      BufferBuilder bbBloom = tessellator.begin(PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);

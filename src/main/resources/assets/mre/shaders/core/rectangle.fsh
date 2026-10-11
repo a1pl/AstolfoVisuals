@@ -1,9 +1,10 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <mre:common.glsl>
+#include <mre:common.glsl>
 
-in vec2 FragCoord; // normalized fragment coord relative to the primitive
-in vec4 FragColor;
+layout(location = 0) in vec2 FragCoord; // normalized fragment coord relative to the primitive
+layout(location = 1) in vec4 FragColor;
 
 
 layout(std140) uniform MreParams {
@@ -12,7 +13,7 @@ layout(std140) uniform MreParams {
     float Smoothness;
 };
 
-out vec4 OutColor;
+layout(location = 0) out vec4 OutColor;
 
 void main() {
     float alpha = ralpha(Size, FragCoord, Radius, Smoothness);

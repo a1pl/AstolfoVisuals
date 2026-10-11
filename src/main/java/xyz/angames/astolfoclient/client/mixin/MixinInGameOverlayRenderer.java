@@ -16,7 +16,7 @@ import xyz.angames.astolfoclient.client.module.modules.render.NoRenderModule;
 @Mixin(ScreenEffectRenderer.class)
 public class MixinInGameOverlayRenderer {
    @Inject(method = "submitFire", at = @At("HEAD"), cancellable = true)
-   private static void onRenderFireOverlay(PoseStack matrices, SubmitNodeCollector vertexConsumers, TextureAtlasSprite sprite, CallbackInfo ci) {
+   private static void onRenderFireOverlay(CallbackInfo ci) {
       NoRenderModule noRender = NoRenderModule.getInstance();
       if (noRender != null && noRender.isEnabled() && noRender.fire.get()) {
          ci.cancel();
@@ -24,7 +24,7 @@ public class MixinInGameOverlayRenderer {
    }
 
    @Inject(method = "submitBlockSprite", at = @At("HEAD"), cancellable = true)
-   private static void onRenderInWallOverlay(TextureAtlasSprite sprite, PoseStack matrices, SubmitNodeCollector vertexConsumers, int color, CallbackInfo ci) {
+   private static void onRenderInWallOverlay(CallbackInfo ci) {
       NoRenderModule noRender = NoRenderModule.getInstance();
       if (noRender != null && noRender.isEnabled() && noRender.blockOverlay.get()) {
          ci.cancel();

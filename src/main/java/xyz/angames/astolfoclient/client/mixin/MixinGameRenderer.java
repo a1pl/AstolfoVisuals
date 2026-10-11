@@ -13,20 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.angames.astolfoclient.client.module.modules.render.NoRenderModule;
 
 @Environment(EnvType.CLIENT)
-@Mixin(GameRenderer.class)
+@Mixin(net.minecraft.client.player.LocalPlayer.class)
 public class MixinGameRenderer {
    @Inject(method = "displayItemActivation", at = @At("HEAD"), cancellable = true)
    private void onShowFloatingItem(ItemStack floatingItem, CallbackInfo ci) {
       NoRenderModule noRender = NoRenderModule.getInstance();
       if (noRender != null && noRender.isEnabled() && noRender.totem.get()) {
-         ci.cancel();
-      }
-   }
-
-   @Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
-   private void onTiltViewWhenHurt(CameraRenderState cameraState, PoseStack matrices, CallbackInfo ci) {
-      NoRenderModule noRender = NoRenderModule.getInstance();
-      if (noRender != null && noRender.isEnabled() && noRender.hurtCam.get()) {
          ci.cancel();
       }
    }

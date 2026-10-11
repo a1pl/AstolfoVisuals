@@ -20,7 +20,7 @@ import xyz.angames.astolfoclient.client.compat.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.resources.Identifier;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;

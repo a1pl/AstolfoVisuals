@@ -51,7 +51,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.world.phys.HitResult.Type;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.ClipContext.Block;
@@ -356,7 +356,7 @@ public class TrajectoriesRenderer {
    ) {
       matrices.pushPose();
       matrices.translate(pos.x - camPos.x, pos.y - camPos.y, pos.z - camPos.z);
-      matrices.mulPose(cameraRot);
+      matrices.rotate(cameraRot);
       Matrix4f mx = matrices.last().pose();
       Vtx.vertex(buffer, mx, -size / 2.0F, -size / 2.0F, 0.0F).setUv(0.0F, 1.0F).setColor(r, g, b, alpha);
       Vtx.vertex(buffer, mx, size / 2.0F, -size / 2.0F, 0.0F).setUv(1.0F, 1.0F).setColor(r, g, b, alpha);
@@ -567,8 +567,8 @@ public class TrajectoriesRenderer {
 
          matrices.pushPose();
          matrices.translate(hX, hY, hZ);
-         matrices.mulPose(blockHit.getDirection().getRotation());
-         matrices.mulPose(Axis.XN.rotationDegrees(-90.0F));
+         matrices.rotate(blockHit.getDirection().getRotation());
+         matrices.rotate(Axis.XN.rotationDegrees(-90.0F));
          RenderSystem.enableBlend();
          RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
          RenderSystem.disableCull();

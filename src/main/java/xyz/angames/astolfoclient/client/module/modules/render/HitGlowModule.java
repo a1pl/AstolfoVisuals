@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.BufferUtils;
@@ -393,7 +393,7 @@ public class HitGlowModule extends Module {
                float scale = p.baseScale * (0.6F + 0.6F * (float)Math.sin(lifePC * Math.PI));
                matrices.pushPose();
                matrices.translate(px, py, pz);
-               matrices.mulPose(camRot);
+               matrices.rotate(camRot);
                Matrix4f matrix = matrices.last().pose();
                if (!isGlowDot) {
                   float auraScale = scale * 1.5F;

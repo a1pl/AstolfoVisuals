@@ -195,6 +195,7 @@ public class AstolfoclientClient implements ClientModInitializer {
    }
 
    public void onInitializeClient() {
+      dev.sxmurxy.mre.utils.CRenderPipelines.init();
       instance = this;
       ModSounds.register();
       moduleManager = new ModuleManager();
@@ -278,6 +279,7 @@ public class AstolfoclientClient implements ClientModInitializer {
          }
       });
       ClientTickEvents.END_CLIENT_TICK.register((EndTick)client -> {
+         xyz.angames.astolfoclient.client.compat.PipelineSelfTest.runOnce(client);
          try {
             ClientProtectionManager.getInstance().tick();
          } catch (Exception var16) {

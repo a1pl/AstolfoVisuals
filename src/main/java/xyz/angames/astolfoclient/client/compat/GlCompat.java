@@ -1,10 +1,10 @@
 package xyz.angames.astolfoclient.client.compat;
 
-import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.opengl.GlTexture;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.backend.opengl.GlTexture;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTexture;
 import java.util.HashMap;
 import java.util.Map;
 import org.lwjgl.opengl.GL11;
@@ -38,7 +38,7 @@ public final class GlCompat {
    /** Returns a framebuffer object with the target's color (and depth) textures attached. */
    public static int fbo(RenderTarget target) {
       int color = colorId(target);
-      int depth = target.useDepth && target.getDepthTexture() != null ? depthId(target) : 0;
+      int depth = target.hasDepth() ? depthId(target) : 0;
       long key = ((long)color << 32) | (depth & 0xFFFFFFFFL);
       Integer existing = FBOS.get(key);
       if (existing != null) {
@@ -59,7 +59,7 @@ public final class GlCompat {
    }
 
    public static TextureTarget newTarget(int width, int height, boolean depth) {
-      TextureTarget t = new TextureTarget("astolfo", width, height, depth, GpuFormat.RGBA8_UNORM);
+      TextureTarget t = new TextureTarget("astolfo", width, height, GpuFormat.RGBA8_UNORM, depth ? GpuFormat.D32_FLOAT : null);
       OWNED.put(t, Boolean.TRUE);
       return t;
    }
@@ -75,7 +75,7 @@ public final class GlCompat {
       float[] c = CLEAR_COLORS.getOrDefault(target, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
       GL11.glClearColor(c[0], c[1], c[2], c[3]);
       int mask = GL11.GL_COLOR_BUFFER_BIT;
-      if (target.useDepth) {
+      if (target.hasDepth()) {
          GL11.glClearDepth(0.0);
          mask |= GL11.GL_DEPTH_BUFFER_BIT;
       }

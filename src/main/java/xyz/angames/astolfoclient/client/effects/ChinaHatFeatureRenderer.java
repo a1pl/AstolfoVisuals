@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.model.player.PlayerModel;
 import xyz.angames.astolfoclient.client.compat.ShaderProgram;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -64,7 +64,7 @@ public class ChinaHatFeatureRenderer extends RenderLayer<AvatarRenderState, Play
                ((PlayerModel)this.getParentModel()).head.translateAndRotate(matrices);
                matrices.translate(0.0F, -0.4F, 0.0F);
                matrices.scale(1.0F, -1.0F, 1.0F);
-               matrices.mulPose(Axis.YP.rotationDegrees(this.spinAngle));
+               matrices.rotate(Axis.YP.rotationDegrees(this.spinAngle));
                Matrix4f matrix = matrices.last().pose();
                Tesselator tessellator = Tesselator.getInstance();
                // Entities are submitted first and drawn later, so the hat is recorded now and replayed after the level pass.

@@ -1,24 +1,25 @@
 package dev.sxmurxy.mre.utils;
 
-import com.mojang.blaze3d.IndexType;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.IndexType;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.GpuDevice;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.device.GpuDevice;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.MeshData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.Projection;
 import net.minecraft.client.renderer.ProjectionMatrixBuffer;
 import net.minecraft.client.renderer.state.WindowRenderState;
@@ -41,11 +42,12 @@ public final class MreDraw {
     }
 
     private record Pending(RenderPipeline pipeline, GpuBuffer vbo, GpuBuffer ubo, IndexType indexType, int indexCount,
-                           List<Texture> textures, boolean backdrop) {
+                           List<Texture> textures, boolean backdrop, ScreenRectangle scissor) {
     }
 
     private static final List<Pending> QUEUE = new ArrayList<>();
     private static boolean immediate;
+    private static ScreenRectangle currentScissor;
     private static final Projection GUI_PROJECTION = new Projection();
     private static final ProjectionMatrixBuffer GUI_PROJECTION_BUFFER = new ProjectionMatrixBuffer("mre gui");
     private static boolean guiPass;
@@ -53,6 +55,11 @@ public final class MreDraw {
     private static GpuTextureView backdropView;
 
     private MreDraw() {
+    }
+
+    /** Current GUI scissor (GUI-scaled coordinates), maintained by GuiGraphicsExtractorMixin. */
+    public static void setScissor(ScreenRectangle rectangle) {
+        currentScissor = rectangle;
     }
 
     public static void setImmediate(boolean value) {
@@ -83,7 +90,8 @@ public final class MreDraw {
                 }
             }
 
-            Pending p = new Pending(pipeline, vbo, ubo, ds.indexType(), ds.indexCount(), textures, backdrop);
+            Pending p = new Pending(pipeline, vbo, ubo, ds.indexType(), ds.indexCount(), textures, backdrop,
+                immediate ? null : currentScissor);
             if (immediate) {
                 draw(p);
             } else {
@@ -109,6 +117,7 @@ public final class MreDraw {
             }
         } finally {
             guiPass = false;
+            currentScissor = null;
         }
     }
 
@@ -116,8 +125,7 @@ public final class MreDraw {
         GpuDevice device = RenderSystem.getDevice();
         try {
             RenderTarget target = Minecraft.getInstance().gameRenderer.mainRenderTarget();
-            GpuTextureView color = RenderSystem.outputColorTextureOverride != null
-                ? RenderSystem.outputColorTextureOverride : target.getColorTextureView();
+            GpuTextureView color = target.getColorTextureView();
             List<Texture> textures = p.textures;
             if (p.backdrop) {
                 captureBackdrop(target);
@@ -132,7 +140,17 @@ public final class MreDraw {
                 guiPass ? new Matrix4f().setTranslation(0.0F, 0.0F, -11000.0F) : new Matrix4f(), new Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
             try (RenderPass pass = device.createCommandEncoder()
                     .createRenderPass(() -> "MRE draw", color, Optional.empty(), null, OptionalDouble.empty())) {
-                pass.setPipeline(p.pipeline);
+                pass.setPipeline(RenderSystem.getCompiledPipeline(p.pipeline));
+                if (p.scissor != null) {
+                    WindowRenderState w = Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState;
+                    int scale = w.guiScale;
+                    double left = p.scissor.left() * scale;
+                    double top = p.scissor.top() * scale;
+                    double right = Math.min(p.scissor.right() * scale, w.width);
+                    double bottom = Math.min(p.scissor.bottom() * scale, w.height);
+                    pass.enableScissor((int) left, w.height - (int) bottom, Math.max(0, (int) (right - left)), Math.max(0, (int) (bottom - top)));
+                }
+
                 RenderSystem.bindDefaultUniforms(pass);
                 if (guiPass) {
                     pass.setUniform("Projection", GUI_PROJECTION_BUFFER.getBuffer(GUI_PROJECTION));
@@ -145,7 +163,7 @@ public final class MreDraw {
 
                 pass.setVertexBuffer(0, p.vbo.slice());
                 for (Texture t : textures) {
-                    pass.bindTexture(t.name, t.view, t.sampler);
+                    pass.setUniform(t.name, t.view, t.sampler);
                 }
 
                 pass.setIndexBuffer(ibo, seq.type());

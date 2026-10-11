@@ -24,11 +24,11 @@ public final class GuiCompat {
 
    public static boolean shiftDown() {
       long window = net.minecraft.client.Minecraft.getInstance().getWindow().handle();
-      return org.lwjgl.glfw.GLFW.glfwGetKey(window, 340) == 1 || org.lwjgl.glfw.GLFW.glfwGetKey(window, 344) == 1;
+      return GLFW.glfwGetKey(window, 340) == 1 || GLFW.glfwGetKey(window, 344) == 1;
    }
 
    public static boolean controlDown() {
       long window = net.minecraft.client.Minecraft.getInstance().getWindow().handle();
-      return org.lwjgl.glfw.GLFW.glfwGetKey(window, 341) == 1 || org.lwjgl.glfw.GLFW.glfwGetKey(window, 345) == 1;
+      return GLFW.glfwGetKey(window, 341) == 1 || GLFW.glfwGetKey(window, 345) == 1;
    }
 }

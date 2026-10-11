@@ -24,7 +24,7 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.BufferUtils;
@@ -411,8 +411,8 @@ public class TargetEspRenderer {
                      centerY - context.camera().position().y,
                      lerpZ - context.camera().position().z
                   );
-                  matrixStack.mulPose(context.camera().rotation());
-                  matrixStack.mulPose(Axis.ZP.rotationDegrees(effect.currentAngle));
+                  matrixStack.rotate(context.camera().rotation());
+                  matrixStack.rotate(Axis.ZP.rotationDegrees(effect.currentAngle));
                   float scaleProgress = 1.0F;
                   long timeSinceStart = currentTime - effect.startTime;
                   if (timeSinceStart < 200L) {

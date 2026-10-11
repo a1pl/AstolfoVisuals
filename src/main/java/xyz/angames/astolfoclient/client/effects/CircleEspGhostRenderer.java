@@ -17,7 +17,7 @@ import xyz.angames.astolfoclient.client.compat.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -75,7 +75,7 @@ public class CircleEspGhostRenderer {
                      float pZ = (float)Math.sin(rad) * radius;
                      matrices.pushPose();
                      matrices.translate(tX + pX, tY + mainY, tZ + pZ);
-                     matrices.mulPose(cameraRot);
+                     matrices.rotate(cameraRot);
                      float scale = 0.12F;
                      matrices.scale(scale, scale, scale);
                      this.drawBatchedGlowingDot(matrices.last().pose(), buffer, rH, gH, bH, baseAlpha);
@@ -103,7 +103,7 @@ public class CircleEspGhostRenderer {
                            float pZ = (float)Math.sin(rad) * tailRadius;
                            matrices.pushPose();
                            matrices.translate(tX + pX, tY + histY, tZ + pZ);
-                           matrices.mulPose(cameraRot);
+                           matrices.rotate(cameraRot);
                            float scale = 0.12F * (1.0F - tailProgress * 0.5F);
                            matrices.scale(scale, scale, scale);
                            this.drawBatchedGlowingDot(matrices.last().pose(), buffer, rT, gT, bT, tailAlpha);

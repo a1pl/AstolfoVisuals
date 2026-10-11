@@ -1,6 +1,7 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <minecraft:dynamictransforms.glsl>
+#include <minecraft:dynamictransforms.glsl>
 layout(std140) uniform CustomUniforms {
     float uTime;
     vec3 uColor1;
@@ -16,12 +17,12 @@ layout(std140) uniform CustomUniforms {
     int uMode;
 };
 
-in vec4 vertexColor;
-in vec2 texCoord0;
-in vec3 worldPos;
+layout(location = 0) in vec4 vertexColor;
+layout(location = 1) in vec2 texCoord0;
+layout(location = 2) in vec3 worldPos;
 
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 // Convert HSV to RGB for Rainbow mode
 vec3 hsv2rgb(vec3 c) {

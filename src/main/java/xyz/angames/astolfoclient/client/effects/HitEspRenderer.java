@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -88,8 +88,8 @@ public class HitEspRenderer {
                         effect.position.y - context.camera().position().y,
                         effect.position.z - context.camera().position().z
                      );
-                     matrixStack.mulPose(effect.orientation);
-                     matrixStack.mulPose(Axis.ZP.rotation(textureRotation));
+                     matrixStack.rotate(effect.orientation);
+                     matrixStack.rotate(Axis.ZP.rotation(textureRotation));
                      matrixStack.scale(scale, scale, scale);
                      Matrix4f matrix = matrixStack.last().pose();
                      Vtx.vertex(buffer, matrix, -0.5F, -0.5F, 0.0F).setUv(0.0F, 1.0F).setColor(r, g, b, alpha);
@@ -136,9 +136,9 @@ public class HitEspRenderer {
                            renderY - context.camera().position().y,
                            renderZ - context.camera().position().z
                         );
-                        matrixStack.mulPose(Axis.XP.rotationDegrees(renderRotX));
-                        matrixStack.mulPose(Axis.YP.rotationDegrees(renderRotY));
-                        matrixStack.mulPose(Axis.ZP.rotationDegrees(renderRotZ));
+                        matrixStack.rotate(Axis.XP.rotationDegrees(renderRotX));
+                        matrixStack.rotate(Axis.YP.rotationDegrees(renderRotY));
+                        matrixStack.rotate(Axis.ZP.rotationDegrees(renderRotZ));
                         matrixStack.scale(shardScale, shardScale, shardScale);
                         Matrix4f matrix = matrixStack.last().pose();
                         Vtx.vertex(buffer, matrix, -0.5F, -0.5F, 0.0F).setUv(shard.u1, shard.v2).setColor(r, g, b, alpha);

@@ -1,7 +1,8 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-in vec2 TexCoord;
-in vec4 FragColor;
+layout(location = 0) in vec2 TexCoord;
+layout(location = 1) in vec4 FragColor;
 
 uniform sampler2D Sampler0;
 layout(std140) uniform MreParams {
@@ -13,7 +14,7 @@ layout(std140) uniform MreParams {
     float OutlineThickness;
 };
 
-out vec4 OutColor;
+layout(location = 0) out vec4 OutColor;
 
 float median(vec3 color) {
     return max(min(color.r, color.g), min(max(color.r, color.g), color.b));

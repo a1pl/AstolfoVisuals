@@ -1,4 +1,5 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
 layout(std140) uniform CustomUniforms {
     vec2 uResolution;
@@ -11,9 +12,9 @@ layout(std140) uniform CustomUniforms {
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
 
-in vec2 texCoord;
-in vec2 vCenterScreen;
-out vec4 fragColor;
+layout(location = 103) in vec2 texCoord;
+layout(location = 103) in vec2 vCenterScreen;
+layout(location = 0) out vec4 fragColor;
 
 void main() {
     vec4 circleTex = texture(Sampler1, texCoord);

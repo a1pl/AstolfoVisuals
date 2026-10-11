@@ -1,23 +1,23 @@
 package xyz.angames.astolfoclient.client.compat;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.BlendFactor;
-import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.pipeline.BlendFactor;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.blaze3d.buffers.Std140Builder;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +198,7 @@ public final class RenderSystem {
    }
 
    public static void setShaderTexture(int slot, GpuTextureView view) {
-      setShaderTexture(slot, view, com.mojang.blaze3d.systems.RenderSystem.getSamplerCache().getClampToEdge(com.mojang.blaze3d.textures.FilterMode.LINEAR));
+      setShaderTexture(slot, view, com.mojang.blaze3d.systems.RenderSystem.getSamplerCache().getClampToEdge(com.mojang.renderpearl.api.textures.FilterMode.LINEAR));
    }
 
    public static void setShaderTexture(int slot, GpuTextureView view, GpuSampler sampler) {
@@ -225,7 +225,7 @@ public final class RenderSystem {
          var device = com.mojang.blaze3d.systems.RenderSystem.getDevice();
          GpuBuffer vbo = device.createBuffer(() -> "AstolfoVisuals legacy vbo", 32, m.vertexBuffer());
          GpuBuffer ibo;
-         com.mojang.blaze3d.IndexType indexType;
+         com.mojang.renderpearl.api.pipeline.IndexType indexType;
          GpuBuffer ownedIbo = null;
          if (m.indexBuffer() != null) {
             ownedIbo = ibo = device.createBuffer(() -> "AstolfoVisuals legacy ibo", 64, m.indexBuffer());
@@ -280,21 +280,17 @@ public final class RenderSystem {
       var device = com.mojang.blaze3d.systems.RenderSystem.getDevice();
       try {
          RenderTarget target = Minecraft.getInstance().gameRenderer.mainRenderTarget();
-         GpuTextureView color = com.mojang.blaze3d.systems.RenderSystem.outputColorTextureOverride != null
-            ? com.mojang.blaze3d.systems.RenderSystem.outputColorTextureOverride
-            : target.getColorTextureView();
+         GpuTextureView color = target.getColorTextureView();
          GpuTextureView depth = null;
-         if (d.pipeline.wantsDepthTexture() && target.useDepth) {
-            depth = com.mojang.blaze3d.systems.RenderSystem.outputDepthTextureOverride != null
-               ? com.mojang.blaze3d.systems.RenderSystem.outputDepthTextureOverride
-               : target.getDepthTextureView();
+         if (d.pipeline.wantsDepthTexture() && target.hasDepth()) {
+            depth = target.getDepthTextureView();
          }
 
          Matrix4f modelView = view != null ? new Matrix4f(view) : new Matrix4f(d.modelView);
          GpuBufferSlice transforms = com.mojang.blaze3d.systems.RenderSystem.getDynamicUniforms().writeTransform(modelView, d.color);
          try (RenderPass pass = device.createCommandEncoder()
                .createRenderPass(() -> "AstolfoVisuals legacy draw", color, Optional.empty(), depth, OptionalDouble.empty())) {
-            pass.setPipeline(d.pipeline);
+            pass.setPipeline(com.mojang.blaze3d.systems.RenderSystem.getCompiledPipeline(d.pipeline));
             com.mojang.blaze3d.systems.RenderSystem.bindDefaultUniforms(pass);
             pass.setUniform("DynamicTransforms", transforms);
             if (d.ubo != null) {
@@ -303,7 +299,7 @@ public final class RenderSystem {
 
             pass.setVertexBuffer(0, d.vbo.slice());
             for (int i = 0; i < d.views.length; i++) {
-               pass.bindTexture(d.samplerNames.get(i), d.views[i], d.samplers[i]);
+               pass.setUniform(d.samplerNames.get(i), d.views[i], d.samplers[i]);
             }
 
             pass.setIndexBuffer(d.ibo, d.indexType);
@@ -327,7 +323,8 @@ public final class RenderSystem {
          Identifier shaderId = custom != null ? custom.shaderId() : Identifier.withDefaultNamespace(s.shader);
          RenderPipeline.Builder b = RenderPipeline.builder(RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath("astolfoclient", "pipeline/legacy_" + pipelineCounter++))
-            .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
             .withVertexShader(shaderId)
             .withFragmentShader(shaderId)
             .withVertexBinding(0, format)
@@ -342,10 +339,10 @@ public final class RenderSystem {
             BindGroupLayout.Builder lb = BindGroupLayout.builder();
             if (custom != null) {
                for (String name : custom.samplers()) {
-                  lb.withSampler(name);
+                  lb.withUniform(name, UniformType.COMBINED_IMAGE_SAMPLER);
                }
             } else {
-               lb.withSampler("Sampler0");
+               lb.withUniform("Sampler0", UniformType.COMBINED_IMAGE_SAMPLER);
             }
 
             b.withBindGroupLayout(lb.build());
@@ -361,10 +358,15 @@ public final class RenderSystem {
       });
    }
 
+   /** Builds (and caches) the pipeline a custom shader would use with default state; used by the startup self-test. */
+   public static RenderPipeline pipelineFor(ShaderProgram program) {
+      return pipeline(CoreShaders.POSITION_COLOR, program, PrimitiveTopology.QUADS, program.format, program.samplers().size());
+   }
+
    private static final BindGroupLayout CUSTOM_LAYOUT = BindGroupLayout.builder().withUniform("CustomUniforms", UniformType.UNIFORM_BUFFER).build();
 
    private record Deferred(
-      RenderPipeline pipeline, GpuBuffer vbo, GpuBuffer ownedIbo, GpuBuffer ibo, com.mojang.blaze3d.IndexType indexType, int indexCount,
+      RenderPipeline pipeline, GpuBuffer vbo, GpuBuffer ownedIbo, GpuBuffer ibo, com.mojang.renderpearl.api.pipeline.IndexType indexType, int indexCount,
       GpuBuffer ubo, List<String> samplerNames, GpuTextureView[] views, GpuSampler[] samplers, Vector4f color, Matrix4f modelView
    ) {
    }

@@ -45,11 +45,11 @@ public class CowModel {
          float pitch = -2.0F + walkAmount * 5.5F + (float)Math.cos(ageInTicks * 0.07F) * 0.6F;
          matrixStack.pushPose();
          matrixStack.translate(0.0, bob, 0.0);
-         matrixStack.mulPose(Axis.YP.rotationDegrees(state.bodyRot));
+         matrixStack.rotate(Axis.YP.rotationDegrees(state.bodyRot));
          matrixStack.scale(0.48F, 0.48F, 0.48F);
          matrixStack.translate(this.centerX, this.bodyPivotY, this.centerZ);
-         matrixStack.mulPose(Axis.ZP.rotationDegrees(sway));
-         matrixStack.mulPose(Axis.XP.rotationDegrees(pitch));
+         matrixStack.rotate(Axis.ZP.rotationDegrees(sway));
+         matrixStack.rotate(Axis.XP.rotationDegrees(pitch));
          matrixStack.translate(-this.centerX, -this.bodyPivotY, -this.centerZ);
          matrixStack.translate(-this.centerX, -this.minY, -this.centerZ);
          collector.submitCustomGeometry(matrixStack, RenderTypes.entityTranslucent(TEXTURE_LOCATION), (pose, buffer) -> this.renderTriangles(pose.pose(), buffer, light));

@@ -18,7 +18,7 @@ import xyz.angames.astolfoclient.client.module.Module;
 public class KeyboardMixin {
    @Inject(method = "keyPress", at = @At("HEAD"), cancellable = true)
    private void onKey(long window, int action, net.minecraft.client.input.KeyEvent event, CallbackInfo ci) {
-      int key = event.key();
+      int key = xyz.angames.astolfoclient.client.compat.KeyMap.sdlToGlfw(event.key());
       if (key != -1 && key > 0) {
          Minecraft client = Minecraft.getInstance();
          if (action == 1 && client.gui.screen() == null) {

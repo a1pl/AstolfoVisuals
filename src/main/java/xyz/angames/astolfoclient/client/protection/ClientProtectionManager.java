@@ -109,32 +109,32 @@ public class ClientProtectionManager {
       }
 
       if (packet instanceof ClientboundLevelParticlesPacket particle) {
-         if (isInvalidDouble(particle.getX())
-            || isInvalidDouble(particle.getY())
-            || isInvalidDouble(particle.getZ())
-            || Math.abs(particle.getX()) > 3.0E7
-            || Math.abs(particle.getY()) > 3.0E7
-            || Math.abs(particle.getZ()) > 3.0E7) {
+         if (isInvalidDouble(particle.x())
+            || isInvalidDouble(particle.y())
+            || isInvalidDouble(particle.z())
+            || Math.abs(particle.x()) > 3.0E7
+            || Math.abs(particle.y()) > 3.0E7
+            || Math.abs(particle.z()) > 3.0E7) {
             this.onCrashBlocked("Particle Exploit", "Coordinates out of bounds");
             return true;
          }
 
-         if (particle.getCount() > 1000 || particle.getCount() < 0) {
-            this.onCrashBlocked("Particle Exploit", "Invalid count: " + particle.getCount());
+         if (particle.count() > 1000 || particle.count() < 0) {
+            this.onCrashBlocked("Particle Exploit", "Invalid count: " + particle.count());
             return true;
          }
 
-         if (Float.isNaN(particle.getMaxSpeed()) || Float.isInfinite(particle.getMaxSpeed()) || Math.abs(particle.getMaxSpeed()) > 1000.0F) {
+         if (Float.isNaN(Math.max(particle.xMaxSpeed(), Math.max(particle.yMaxSpeed(), particle.zMaxSpeed()))) || Float.isInfinite(Math.max(particle.xMaxSpeed(), Math.max(particle.yMaxSpeed(), particle.zMaxSpeed()))) || Math.abs(Math.max(particle.xMaxSpeed(), Math.max(particle.yMaxSpeed(), particle.zMaxSpeed()))) > 1000.0F) {
             this.onCrashBlocked("Particle Exploit", "Malformed particle speed");
             return true;
          }
 
-         if (Float.isNaN(particle.getXDist())
-            || Float.isNaN(particle.getYDist())
-            || Float.isNaN(particle.getZDist())
-            || Math.abs(particle.getXDist()) > 1000.0F
-            || Math.abs(particle.getYDist()) > 1000.0F
-            || Math.abs(particle.getZDist()) > 1000.0F) {
+         if (Float.isNaN(particle.xDist())
+            || Float.isNaN(particle.yDist())
+            || Float.isNaN(particle.zDist())
+            || Math.abs(particle.xDist()) > 1000.0F
+            || Math.abs(particle.yDist()) > 1000.0F
+            || Math.abs(particle.zDist()) > 1000.0F) {
             this.onCrashBlocked("Particle Exploit", "Malformed particle offset");
             return true;
          }
@@ -235,7 +235,7 @@ public class ClientProtectionManager {
                   try {
                      Minecraft mc = Minecraft.getInstance();
                      if (mc != null && mc.getConnection() != null) {
-                        mc.getConnection().send(new ServerboundAcceptTeleportationPacket(teleport.id()));
+                        mc.getConnection().send(new ServerboundAcceptTeleportationPacket(teleport.id(), mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYRot(), mc.player.getXRot()));
                      }
                   } catch (Exception var9) {
                   }
@@ -246,7 +246,7 @@ public class ClientProtectionManager {
          }
 
          if (packet instanceof ClientboundMoveVehiclePacket vehicleMove) {
-            Vec3 pos = vehicleMove.position();
+            Vec3 pos = vehicleMove.movingTo().position();
             if (pos == null
                || isInvalidDouble(pos.x)
                || isInvalidDouble(pos.y)
@@ -254,10 +254,10 @@ public class ClientProtectionManager {
                || Math.abs(pos.x) > 3.0E7
                || Math.abs(pos.y) > 3.0E7
                || Math.abs(pos.z) > 3.0E7
-               || Float.isNaN(vehicleMove.yRot())
-               || Float.isInfinite(vehicleMove.yRot())
-               || Float.isNaN(vehicleMove.xRot())
-               || Float.isInfinite(vehicleMove.xRot())) {
+               || Float.isNaN(vehicleMove.movingTo().yRot())
+               || Float.isInfinite(vehicleMove.movingTo().yRot())
+               || Float.isNaN(vehicleMove.movingTo().xRot())
+               || Float.isInfinite(vehicleMove.movingTo().xRot())) {
                this.onCrashBlocked("Vehicle Crash", "Invalid vehicle coordinates or rotation");
                return true;
             }
@@ -281,9 +281,8 @@ public class ClientProtectionManager {
          }
 
          if (packet instanceof ClientboundEntityPositionSyncPacket entitySync) {
-            PositionMoveRotation values = entitySync.values();
-            if (values != null) {
-               Vec3 pos = values.position();
+            if (entitySync.position() != null) {
+               Vec3 pos = entitySync.position().endPosition();
                if (pos == null
                   || isInvalidDouble(pos.x)
                   || isInvalidDouble(pos.y)

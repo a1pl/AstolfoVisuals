@@ -16,7 +16,7 @@ import xyz.angames.astolfoclient.client.compat.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.resources.Identifier;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
@@ -79,7 +79,7 @@ public class KillEffectRenderer {
                               float bz = (float)(p1.z + (p2.z - p1.z) * lerp);
                               matrices.pushPose();
                               matrices.translate(bx, by, bz);
-                              matrices.mulPose(context.camera().rotation());
+                              matrices.rotate(context.camera().rotation());
                               float scale = 0.6F;
                               matrices.scale(scale, scale, scale);
                               this.drawBatchedGlowingDot(matrices.last().pose(), buffer, r, g, b, zapAlpha);
@@ -114,7 +114,7 @@ public class KillEffectRenderer {
 
                            matrices.pushPose();
                            matrices.translate(p.startX, currentY, p.startZ);
-                           matrices.mulPose(cameraRot);
+                           matrices.rotate(cameraRot);
                            float pScale = 0.18F;
                            matrices.scale(pScale, pScale, pScale);
                            Matrix4f pMatrix = matrices.last().pose();

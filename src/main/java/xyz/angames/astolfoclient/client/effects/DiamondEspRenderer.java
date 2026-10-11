@@ -21,7 +21,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.resources.Identifier;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -102,7 +102,7 @@ public class DiamondEspRenderer {
                                  matrices.translate(
                                     tX + pos[0] - cameraPos.x, entityCenterY + pos[1] - cameraPos.y, tZ + pos[2] - cameraPos.z
                                  );
-                                 matrices.mulPose(context.camera().rotation());
+                                 matrices.rotate(context.camera().rotation());
                                  this.drawBloom(matrices, bbBloom, 0.35F, r, g, b, baseAlpha * 0.6F * pos[3]);
                                  matrices.popPose();
                               }
@@ -119,8 +119,8 @@ public class DiamondEspRenderer {
                                  matrices.translate(
                                     tX + pos[0] - cameraPos.x, entityCenterY + pos[1] - cameraPos.y, tZ + pos[2] - cameraPos.z
                                  );
-                                 matrices.mulPose(Axis.YP.rotationDegrees(fastTime * 60.0F + i * 15.0F));
-                                 matrices.mulPose(Axis.XP.rotationDegrees(fastTime * 40.0F + i * 10.0F));
+                                 matrices.rotate(Axis.YP.rotationDegrees(fastTime * 60.0F + i * 15.0F));
+                                 matrices.rotate(Axis.XP.rotationDegrees(fastTime * 40.0F + i * 10.0F));
                                  this.draw3DDiamond(matrices, bbSolid, 0.08F, r, g, b, baseAlpha * 0.8F * pos[3]);
                                  this.draw3DDiamond(matrices, bbSolid, 0.07F, cr, cg, cb, baseAlpha * pos[3]);
                                  matrices.popPose();
@@ -138,8 +138,8 @@ public class DiamondEspRenderer {
                                  matrices.translate(
                                     tX + pos[0] - cameraPos.x, entityCenterY + pos[1] - cameraPos.y, tZ + pos[2] - cameraPos.z
                                  );
-                                 matrices.mulPose(Axis.YP.rotationDegrees(fastTime * 60.0F + i * 15.0F));
-                                 matrices.mulPose(Axis.XP.rotationDegrees(fastTime * 40.0F + i * 10.0F));
+                                 matrices.rotate(Axis.YP.rotationDegrees(fastTime * 60.0F + i * 15.0F));
+                                 matrices.rotate(Axis.XP.rotationDegrees(fastTime * 40.0F + i * 10.0F));
                                  this.draw3DDiamondLines(matrices, bbLines, 0.08F, r, g, b, baseAlpha * pos[3]);
                                  matrices.popPose();
                               }

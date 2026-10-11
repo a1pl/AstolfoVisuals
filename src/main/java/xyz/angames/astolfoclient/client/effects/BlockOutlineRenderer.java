@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import xyz.angames.astolfoclient.client.compat.ShaderProgram;
 import com.mojang.blaze3d.vertex.MeshData;
 import net.minecraft.world.phys.HitResult.Type;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;

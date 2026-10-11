@@ -22,7 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -134,7 +134,7 @@ public class FireFliesModule extends Module {
                   double sparkZ = spark.prevPosZ + (spark.posZ - spark.prevPosZ) * tickDelta - cameraPos.z;
                   matrixStack.pushPose();
                   matrixStack.translate(sparkX, sparkY, sparkZ);
-                  matrixStack.mulPose(cameraRot);
+                  matrixStack.rotate(cameraRot);
                   float sparkSize = 0.02F;
                   matrixStack.scale(sparkSize, sparkSize, sparkSize);
                   Matrix4f sm = matrixStack.last().pose();
@@ -194,7 +194,7 @@ public class FireFliesModule extends Module {
             double z = part.prevPos.z + (part.posVec.z - part.prevPos.z) * tickDelta - cameraPos.z;
             matrixStack.pushPose();
             matrixStack.translate(x, y, z);
-            matrixStack.mulPose(cameraRot);
+            matrixStack.rotate(cameraRot);
             float scale = 0.08F;
             matrixStack.scale(scale, scale, scale);
             Matrix4f m = matrixStack.last().pose();

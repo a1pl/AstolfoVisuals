@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 
 import dev.sxmurxy.mre.msdf.FontData.AtlasData;
 import dev.sxmurxy.mre.msdf.FontData.GlyphData;
@@ -41,7 +41,7 @@ public final class MsdfFont {
 	}
 
 	public GpuSampler getSampler() {
-		return com.mojang.blaze3d.systems.RenderSystem.getSamplerCache().getClampToEdge(com.mojang.blaze3d.textures.FilterMode.LINEAR);
+		return com.mojang.blaze3d.systems.RenderSystem.getSamplerCache().getClampToEdge(com.mojang.renderpearl.api.textures.FilterMode.LINEAR);
 	}
 	
 	public void applyGlyphs(Matrix4f matrix, VertexConsumer consumer, String text, float size, float thickness, float spacing, float x, float y, float z, int color) {

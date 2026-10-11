@@ -1362,22 +1362,22 @@ public class ClickGuiScreen extends Screen {
 
    @Override
    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-      return this.mouseClicked(event.x(), event.y(), event.button());
+      return this.mouseClicked(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()));
    }
 
    @Override
    public boolean mouseReleased(MouseButtonEvent event) {
-      return this.mouseReleased(event.x(), event.y(), event.button());
+      return this.mouseReleased(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()));
    }
 
    @Override
    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-      return this.mouseDragged(event.x(), event.y(), event.button(), dx, dy);
+      return this.mouseDragged(event.x(), event.y(), xyz.angames.astolfoclient.client.compat.KeyMap.sdlButtonToGlfw(event.button()), dx, dy);
    }
 
    @Override
    public boolean keyPressed(KeyEvent event) {
-      return this.keyPressed(event.key(), event.scancode(), event.modifiers());
+      return this.keyPressed(xyz.angames.astolfoclient.client.compat.KeyMap.sdlToGlfw(event.key()), event.keycode(), xyz.angames.astolfoclient.client.compat.KeyMap.glfwMods(event));
    }
 
    @Override
@@ -1719,7 +1719,7 @@ public class ClickGuiScreen extends Screen {
                   }
                }
 
-               return super.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
+               return super.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)), false);
             }
          }
       }
@@ -1755,7 +1755,7 @@ public class ClickGuiScreen extends Screen {
          }
       }
 
-      return super.mouseDragged(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), deltaX, deltaY);
+      return super.mouseDragged(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)), deltaX, deltaY);
    }
 
    public boolean mouseReleased(double mouseX, double mouseY, int button) {
@@ -1770,7 +1770,7 @@ public class ClickGuiScreen extends Screen {
          mb.mouseReleased();
       }
 
-      return super.mouseReleased(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)));
+      return super.mouseReleased(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button + 1, 0)));
    }
 
    @Override
@@ -1885,7 +1885,7 @@ public class ClickGuiScreen extends Screen {
       } else {
          boolean isCloseKey = key == 256 || key == 260 || key == 344 || key == AstolfoclientClient.clickGuiKeyCode;
          if (!isCloseKey) {
-            return super.keyPressed(new KeyEvent(key, scan, mod));
+            return super.keyPressed(new KeyEvent(xyz.angames.astolfoclient.client.compat.KeyMap.glfwToSdl(key), scan, 0));
          }
 
          if (key == 256) {

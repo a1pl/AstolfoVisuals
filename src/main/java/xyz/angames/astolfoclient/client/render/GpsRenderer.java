@@ -20,7 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.manager.GpsManager;
 
@@ -81,7 +81,7 @@ public class GpsRenderer {
             PoseStack matrixStack = context.matrixStack();
             matrixStack.pushPose();
             matrixStack.translate(renderX - cameraPos.x, renderYFinal - cameraPos.y, renderZ - cameraPos.z);
-            matrixStack.mulPose(context.camera().rotation());
+            matrixStack.rotate(context.camera().rotation());
             matrixStack.scale(1.0F, -1.0F, 1.0F);
             float fixedScale = 0.04F;
             matrixStack.scale(fixedScale, fixedScale, fixedScale);

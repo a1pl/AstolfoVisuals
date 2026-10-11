@@ -28,7 +28,7 @@ import com.mojang.math.Axis;
 import com.mojang.blaze3d.vertex.MeshData;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
 import xyz.angames.astolfoclient.client.module.Module;
@@ -580,8 +580,8 @@ public class RainModule extends Module {
                float tickDelta = context.tickCounter().getGameTimeDeltaPartialTick(false);
                if (this.wetGround.get()) {
                   PoseStack viewStack = new PoseStack();
-                  viewStack.mulPose(Axis.XP.rotationDegrees(camera.xRot()));
-                  viewStack.mulPose(Axis.YP.rotationDegrees(camera.yRot() + 180.0F));
+                  viewStack.rotate(Axis.XP.rotationDegrees(camera.xRot()));
+                  viewStack.rotate(Axis.YP.rotationDegrees(camera.yRot() + 180.0F));
                   Matrix4f viewMatrix = viewStack.last().pose();
                   Matrix4f projectionMatrix = context.projectionMatrix();
                   this.renderWetSurfaceFrame(camera, viewMatrix, projectionMatrix, tickDelta);
@@ -676,8 +676,8 @@ public class RainModule extends Module {
                         tilt = Mth.clamp(tilt, -55.0F, 55.0F);
                         ms.pushPose();
                         ms.translate(dx, dy, dz);
-                        ms.mulPose(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
-                        ms.mulPose(Axis.ZP.rotationDegrees(-tilt));
+                        ms.rotate(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
+                        ms.rotate(Axis.ZP.rotationDegrees(-tilt));
                         Matrix4f m = ms.last().pose();
                         float half = width * 0.5F;
                         float top = length * 0.5F;
@@ -783,7 +783,7 @@ public class RainModule extends Module {
                if (!(alpha <= 0.01F) && !(height <= 0.005F)) {
                   ms.pushPose();
                   ms.translate(s.x - cam.x, s.y - cam.y + 0.02, s.z - cam.z);
-                  ms.mulPose(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
+                  ms.rotate(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
                   Matrix4f m = ms.last().pose();
                   float base = s.scale * 0.16F;
                   Vtx.vertex(buffer, m, -base * 0.25F, height, 0.0F).setColor(rgb[0], rgb[1], rgb[2], 0.0F);
@@ -821,8 +821,8 @@ public class RainModule extends Module {
                float tilt = (float)Math.toDegrees(Math.atan2(horizontal, -d.vy + 1.0E-4));
                ms.pushPose();
                ms.translate(d.x - cam.x, d.y - cam.y, d.z - cam.z);
-               ms.mulPose(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
-               ms.mulPose(Axis.ZP.rotationDegrees(-tilt));
+               ms.rotate(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
+               ms.rotate(Axis.ZP.rotationDegrees(-tilt));
                Matrix4f m = ms.last().pose();
                Vtx.vertex(buffer, m, -width * 0.4F, length * 0.5F, 0.0F).setColor(rgb[0], rgb[1], rgb[2], 0.0F);
                Vtx.vertex(buffer, m, width * 0.4F, length * 0.5F, 0.0F).setColor(rgb[0], rgb[1], rgb[2], 0.0F);
@@ -852,7 +852,7 @@ public class RainModule extends Module {
             if (!(alpha <= 0.004F)) {
                ms.pushPose();
                ms.translate(mist.x - cam.x, mist.y - cam.y, mist.z - cam.z);
-               ms.mulPose(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
+               ms.rotate(Axis.YP.rotationDegrees(180.0F - camera.yRot()));
                Matrix4f m = ms.last().pose();
                float half = mist.size * 0.5F;
                float top = mist.size * 0.42F;

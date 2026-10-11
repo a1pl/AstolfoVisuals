@@ -166,7 +166,7 @@ public class ClientPlayerInteractionManagerMixin {
          if (newHealth <= 0.0F) {
             fake.handleEntityEvent((byte)35);
             Minecraft.getInstance().particleEngine.createTrackingEmitter(fake, ParticleTypes.TOTEM_OF_UNDYING, 30);
-            Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(Items.TOTEM_OF_UNDYING));
+            Minecraft.getInstance().player.displayItemActivation(new ItemStack(Items.TOTEM_OF_UNDYING));
             player.playSound(SoundEvents.TOTEM_USE, 1.0F, 1.0F);
             fake.setHealth(20.0F);
          } else {

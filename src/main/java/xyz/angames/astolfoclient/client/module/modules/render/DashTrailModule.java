@@ -25,7 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.client.Camera;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
 import xyz.angames.astolfoclient.client.module.Module;
@@ -244,7 +244,7 @@ public class DashTrailModule extends Module {
                            double rz = spark.getRenderPosZ(tickDelta) + cubic.getRenderPosZ(tickDelta) - camZ;
                            matrices.pushPose();
                            matrices.translate(rx, ry, rz);
-                           matrices.mulPose(camera.rotation());
+                           matrices.rotate(camera.rotation());
                            float sz = 0.06F * sparkAPC;
                            Matrix4f matrix = matrices.last().pose();
                            addVertex(bb, matrix, -sz, -sz, 0.0F, 0.0F, 1.0F, c);
@@ -386,7 +386,7 @@ public class DashTrailModule extends Module {
                   float timePcOf = Math.max(0.0F, 1.0F - this.getTimePC());
                   stack.pushPose();
                   stack.translate(rx, ry, rz);
-                  stack.mulPose(camera.rotation());
+                  stack.rotate(camera.rotation());
                   int color1 = DashTrailModule.getOverallColorFrom(this.color, -1, 0.15F);
                   int bloomColor = DashTrailModule.swapAlpha(color1, 55.0F * aPC);
                   RenderSystem.setShaderTexture(0, DashTrailModule.DASH_BLOOM);
@@ -420,7 +420,7 @@ public class DashTrailModule extends Module {
                   float halfY = extY / 2.0F;
                   stack.pushPose();
                   stack.translate(rx, ry, rz);
-                  stack.mulPose(camera.rotation());
+                  stack.rotate(camera.rotation());
                   int mainColor = DashTrailModule.toDark(DashTrailModule.getOverallColorFrom(this.color, -1, 0.4F), aPC);
                   RenderSystem.setShaderTexture(0, texId);
                   BufferBuilder bb = Tesselator.getInstance().begin(PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);

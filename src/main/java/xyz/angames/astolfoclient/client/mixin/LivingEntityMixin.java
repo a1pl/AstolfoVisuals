@@ -83,8 +83,8 @@ public class LivingEntityMixin {
       }
    }
 
-   @Inject(method = "getCurrentSwingDuration", at = @At("HEAD"), cancellable = true)
-   private void onGetHandSwingDuration(CallbackInfoReturnable<Integer> cir) {
+   @Inject(method = "getModifiedSwingDuration", at = @At("HEAD"), cancellable = true)
+   private void onGetHandSwingDuration(net.minecraft.world.item.component.SwingAnimation animation, CallbackInfoReturnable<Integer> cir) {
       LivingEntity entity = (LivingEntity)(Object)this;
       if (entity == Minecraft.getInstance().player && AstolfoclientClient.moduleManager != null) {
          SwingAnimationModule swing = (SwingAnimationModule)AstolfoclientClient.moduleManager.getModuleByName("SwingAnimation");

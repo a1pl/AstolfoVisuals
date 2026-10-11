@@ -1,8 +1,8 @@
 package dev.sxmurxy.mre.renderers.impl;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.sxmurxy.mre.builders.states.QuadColorState;

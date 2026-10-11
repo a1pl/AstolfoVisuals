@@ -17,7 +17,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import xyz.angames.astolfoclient.client.compat.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -122,7 +122,7 @@ public class GhostEspRenderer {
                                     PoseStack matrices = context.matrixStack();
                                     matrices.pushPose();
                                     matrices.translate(tX + localX - camX, tY + scanY + localY - camY, tZ + localZ - camZ);
-                                    matrices.mulPose(context.camera().rotation());
+                                    matrices.rotate(context.camera().rotation());
                                     matrices.scale(scale, scale, scale);
                                     BufferBuilder buffer = tessellator.begin(PrimitiveTopology.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
                                     this.drawGlowingDot(matrices.last().pose(), buffer, r, g, b, cr, cg, cb, alpha);

@@ -22,7 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import xyz.angames.astolfoclient.client.config.ThemeManager;
@@ -141,17 +141,17 @@ public class WingsModule extends Module {
             stack.scale(0.5F, 0.5F, 0.5F);
          }
 
-         stack.mulPose(Axis.YP.rotationDegrees(180.0F - bodyYaw));
+         stack.rotate(Axis.YP.rotationDegrees(180.0F - bodyYaw));
          if (pose.preTranslateY != 0.0F || pose.preTranslateZ != 0.0F) {
             stack.translate(0.0F, pose.preTranslateY, pose.preTranslateZ);
          }
 
          if (pose.pitchRotation != 0.0F) {
-            stack.mulPose(Axis.XP.rotationDegrees(pose.pitchRotation));
+            stack.rotate(Axis.XP.rotationDegrees(pose.pitchRotation));
          }
 
          if (pose.rollRotation != 0.0F) {
-            stack.mulPose(Axis.ZP.rotationDegrees(pose.rollRotation));
+            stack.rotate(Axis.ZP.rotationDegrees(pose.rollRotation));
          }
 
          stack.translate(0.0F, pose.anchorY, pose.anchorZ);
@@ -165,9 +165,9 @@ public class WingsModule extends Module {
    private void renderWingSide(PoseStack stack, float side, float open, int baseColor, int glowColor, int coreColor, WingsModule.WingPose pose) {
       stack.pushPose();
       stack.translate(side * pose.sideOffset, pose.sideYOffset, pose.sideZOffset);
-      stack.mulPose(Axis.YP.rotationDegrees(side * open));
-      stack.mulPose(Axis.ZP.rotationDegrees(side * pose.sideRoll));
-      stack.mulPose(Axis.XP.rotationDegrees(pose.sidePitch));
+      stack.rotate(Axis.YP.rotationDegrees(side * open));
+      stack.rotate(Axis.ZP.rotationDegrees(side * pose.sideRoll));
+      stack.rotate(Axis.XP.rotationDegrees(pose.sidePitch));
       RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
       this.drawWingLayer(stack, side, 1.22F, setAlpha(glowColor, 48), setAlpha(glowColor, 0));
       this.drawWingLayer(stack, side, 0.84F, setAlpha(coreColor, 57), setAlpha(coreColor, 0));
