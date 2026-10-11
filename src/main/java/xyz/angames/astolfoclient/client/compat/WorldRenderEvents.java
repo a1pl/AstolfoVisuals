@@ -20,6 +20,11 @@ public final class WorldRenderEvents {
          RenderSystem.setLastProjection(ctx.projectionMatrix());
          RenderSystem.flushDeferred(new org.joml.Matrix4f(ctx.cameraState().viewRotationMatrix));
          dev.sxmurxy.mre.utils.MreDraw.setImmediate(true);
+         // Raw-GL effects draw into whatever framebuffer is bound; make that the main target for the duration.
+         int prevFbo = org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_BINDING);
+         int[] prevViewport = new int[4];
+         org.lwjgl.opengl.GL11.glGetIntegerv(org.lwjgl.opengl.GL11.GL_VIEWPORT, prevViewport);
+         GlCompat.bindWrite(net.minecraft.client.Minecraft.getInstance().gameRenderer.mainRenderTarget(), true);
          try {
             BEFORE_ENTITIES.invoker().beforeEntities(ctx);
             AFTER_ENTITIES.invoker().afterEntities(ctx);
@@ -27,6 +32,8 @@ public final class WorldRenderEvents {
             LAST.invoker().onLast(ctx);
          } finally {
             dev.sxmurxy.mre.utils.MreDraw.setImmediate(false);
+            org.lwjgl.opengl.GL30.glBindFramebuffer(org.lwjgl.opengl.GL30.GL_FRAMEBUFFER, prevFbo);
+            org.lwjgl.opengl.GL11.glViewport(prevViewport[0], prevViewport[1], prevViewport[2], prevViewport[3]);
          }
       });
    }

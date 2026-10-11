@@ -16,7 +16,7 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
+import xyz.angames.astolfoclient.client.compat.GL20;
 import org.lwjgl.opengl.GL30;
 import xyz.angames.astolfoclient.client.AstolfoclientClient;
 import xyz.angames.astolfoclient.client.config.ThemeManager;

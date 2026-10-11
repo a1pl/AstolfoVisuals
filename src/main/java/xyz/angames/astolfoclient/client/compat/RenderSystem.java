@@ -61,12 +61,54 @@ public final class RenderSystem {
    private RenderSystem() {
    }
 
+   /**
+    * The legacy setters also apply to real GL state (through the backend's cached GlStateManager so its cache stays
+    * coherent): the mod's raw-GL effects rely on them, while pipeline draws carry their own state anyway.
+    */
+   private static void gl(Runnable r) {
+      if (com.mojang.blaze3d.systems.RenderSystem.isOnRenderThread()) {
+         try {
+            r.run();
+         } catch (Throwable ignored) {
+         }
+      }
+   }
+
+   private static int glFactor(BlendFactor f) {
+      for (SourceFactor s : SourceFactor.values()) {
+         if (s.factor == f) {
+            return s.value;
+         }
+      }
+
+      return 1;
+   }
+
+   private static void applyBlendFunc() {
+      gl(() -> com.mojang.renderpearl.backend.opengl.GlStateManager._blendFuncSeparate(glFactor(srcRgb), glFactor(dstRgb), glFactor(srcA), glFactor(dstA)));
+   }
+
+   private static int glCompare(CompareOp op) {
+      return switch (op) {
+         case NEVER_PASS -> 512;
+         case LESS_THAN -> 513;
+         case EQUAL -> 514;
+         case LESS_THAN_OR_EQUAL -> 515;
+         case GREATER_THAN -> 516;
+         case NOT_EQUAL -> 517;
+         case GREATER_THAN_OR_EQUAL -> 518;
+         default -> 519;
+      };
+   }
+
    public static void enableBlend() {
       blend = true;
+      gl(() -> com.mojang.renderpearl.backend.opengl.GlStateManager._enableBlend(0));
    }
 
    public static void disableBlend() {
       blend = false;
+      gl(() -> com.mojang.renderpearl.backend.opengl.GlStateManager._disableBlend(0));
    }
 
    public static void defaultBlendFunc() {
@@ -74,16 +116,19 @@ public final class RenderSystem {
       dstRgb = BlendFactor.ONE_MINUS_SRC_ALPHA;
       srcA = BlendFactor.ONE;
       dstA = BlendFactor.ZERO;
+      applyBlendFunc();
    }
 
    public static void blendFunc(SourceFactor src, DestFactor dst) {
       srcRgb = srcA = src.factor;
       dstRgb = dstA = dst.factor;
+      applyBlendFunc();
    }
 
    public static void blendFunc(int src, int dst) {
       srcRgb = srcA = SourceFactor.fromGl(src);
       dstRgb = dstA = DestFactor.fromGl(dst);
+      applyBlendFunc();
    }
 
    public static void blendFuncSeparate(SourceFactor src, DestFactor dst, SourceFactor srcAlpha, DestFactor dstAlpha) {
@@ -91,6 +136,7 @@ public final class RenderSystem {
       dstRgb = dst.factor;
       srcA = srcAlpha.factor;
       dstA = dstAlpha.factor;
+      applyBlendFunc();
    }
 
    public static void blendFuncSeparate(int src, int dst, int srcAlpha, int dstAlpha) {
@@ -98,14 +144,17 @@ public final class RenderSystem {
       dstRgb = DestFactor.fromGl(dst);
       srcA = SourceFactor.fromGl(srcAlpha);
       dstA = DestFactor.fromGl(dstAlpha);
+      applyBlendFunc();
    }
 
    public static void enableDepthTest() {
       depthTest = true;
+      gl(com.mojang.renderpearl.backend.opengl.GlStateManager::_enableDepthTest);
    }
 
    public static void disableDepthTest() {
       depthTest = false;
+      gl(com.mojang.renderpearl.backend.opengl.GlStateManager::_disableDepthTest);
    }
 
    /** Takes the legacy GL constant; the 26.x depth buffer is reversed-Z so the comparison is flipped. */
@@ -120,22 +169,28 @@ public final class RenderSystem {
          case 518 -> CompareOp.LESS_THAN_OR_EQUAL;
          default -> CompareOp.ALWAYS_PASS;
       };
+      CompareOp flipped = depthFunc;
+      gl(() -> com.mojang.renderpearl.backend.opengl.GlStateManager._depthFunc(glCompare(flipped)));
    }
 
    public static void depthMask(boolean mask) {
       depthMask = mask;
+      gl(() -> com.mojang.renderpearl.backend.opengl.GlStateManager._depthMask(mask));
    }
 
    public static void enableCull() {
       cull = true;
+      gl(com.mojang.renderpearl.backend.opengl.GlStateManager::_enableCull);
    }
 
    public static void disableCull() {
       cull = false;
+      gl(com.mojang.renderpearl.backend.opengl.GlStateManager::_disableCull);
    }
 
    public static void lineWidth(float width) {
       lineWidth = width;
+      gl(() -> org.lwjgl.opengl.GL11.glLineWidth(Math.max(1.0F, width)));
    }
 
    public static void setShader(CoreShaders s) {

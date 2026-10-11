@@ -137,7 +137,9 @@ public final class MreDraw {
             GpuBuffer ibo = seq.getBuffer(p.indexCount);
             // GUI geometry is submitted at z=0 and the GUI ortho projection spans [1000, 11000]; vanilla shifts it by -11000.
             GpuBufferSlice transforms = RenderSystem.getDynamicUniforms().writeTransform(
-                guiPass ? new Matrix4f().setTranslation(0.0F, 0.0F, -11000.0F) : new Matrix4f(), new Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+                guiPass ? new Matrix4f().setTranslation(0.0F, 0.0F, -11000.0F) : RenderSystem.getModelViewMatrixCopy(), new Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+            // Writing the projection buffer is itself a command, so it has to happen before the pass is opened.
+            GpuBufferSlice guiProjectionSlice = guiPass ? GUI_PROJECTION_BUFFER.getBuffer(GUI_PROJECTION) : null;
             try (RenderPass pass = device.createCommandEncoder()
                     .createRenderPass(() -> "MRE draw", color, Optional.empty(), null, OptionalDouble.empty())) {
                 pass.setPipeline(RenderSystem.getCompiledPipeline(p.pipeline));
@@ -153,7 +155,7 @@ public final class MreDraw {
 
                 RenderSystem.bindDefaultUniforms(pass);
                 if (guiPass) {
-                    pass.setUniform("Projection", GUI_PROJECTION_BUFFER.getBuffer(GUI_PROJECTION));
+                    pass.setUniform("Projection", guiProjectionSlice);
                 }
 
                 pass.setUniform("DynamicTransforms", transforms);

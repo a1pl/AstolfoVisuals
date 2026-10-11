@@ -23,7 +23,7 @@ import xyz.angames.astolfoclient.client.compat.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
+import xyz.angames.astolfoclient.client.compat.GL20;
 import org.lwjgl.opengl.GL30;
 
 @Environment(EnvType.CLIENT)

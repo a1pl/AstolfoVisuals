@@ -10,7 +10,7 @@ import org.joml.Matrix4f;
 
 /**
  * Stand-in for the removed Fabric {@code WorldRenderContext}, built from the 26.x {@link LevelRenderContext}.
- * Exposes a pose stack seeded with the camera rotation (as the old context did) and the level projection.
+ * Exposes an identity pose stack (camera rotation lives in the model-view matrix) and the level projection.
  */
 public final class WorldRenderContext {
    private final LevelRenderContext delegate;
@@ -20,7 +20,7 @@ public final class WorldRenderContext {
    public WorldRenderContext(LevelRenderContext delegate) {
       this.delegate = delegate;
       CameraRenderState cs = delegate.levelState().cameraRenderState;
-      this.poseStack.mulPose(cs.viewRotationMatrix);
+      // The model-view stack already carries the camera rotation while the level renders, so the pose stays identity.
       this.projection = new Matrix4f(cs.projectionMatrix);
    }
 
