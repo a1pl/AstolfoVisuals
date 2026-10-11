@@ -1,15 +1,18 @@
-#version 150
+#version 330
+
+layout(std140) uniform CustomUniforms {
+    vec2 uResolution;
+    float uTime;
+    vec3 uColor1;
+    vec3 uColor2;
+    vec3 uBlockCenter;
+    float uAlphaMode;
+};
 
 in vec4 vertexColor;
 in vec2 texCoord0;
 in vec3 worldPos;
 
-uniform vec2 uResolution;
-uniform float uTime;
-uniform vec3 uColor1;
-uniform vec3 uColor2;
-uniform vec3 uBlockCenter;
-uniform float uAlphaMode;
 
 out vec4 fragColor;
 

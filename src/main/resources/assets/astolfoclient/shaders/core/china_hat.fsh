@@ -1,11 +1,14 @@
-#version 150
+#version 330
+
+layout(std140) uniform CustomUniforms {
+    vec2 uResolution;
+    float uTime;
+    vec3 uThemeColor;
+};
 
 in vec4 vertexColor;
 in vec2 texCoord0;
 
-uniform vec2 uResolution;
-uniform float uTime;
-uniform vec3 uThemeColor;
 
 out vec4 fragColor;
 

@@ -1,15 +1,17 @@
-#version 150
+#version 330
 
 in vec2 TexCoord;
 in vec4 FragColor;
 
 uniform sampler2D Sampler0;
-uniform float Range; // distance field range of the msdf font texture
-uniform float Thickness; // text thickness
-uniform float Smoothness; // edge smoothness
-uniform bool Outline; // if false, outline computation will be ignored
-uniform float OutlineThickness;
-uniform vec4 OutlineColor;
+layout(std140) uniform MreParams {
+    vec4 OutlineColor;
+    float Range;
+    float Thickness;
+    float Smoothness;
+    int Outline;
+    float OutlineThickness;
+};
 
 out vec4 OutColor;
 
@@ -24,7 +26,7 @@ void main() {
     float alpha = smoothstep(-Smoothness, Smoothness, dist * pixels);
     vec4 color = vec4(FragColor.rgb, FragColor.a * alpha);
     
-    if (Outline) {
+    if (Outline != 0) {
         color = mix(OutlineColor, FragColor, alpha);
         color.a *= smoothstep(-Smoothness, Smoothness, (dist + OutlineThickness) * pixels);
     }

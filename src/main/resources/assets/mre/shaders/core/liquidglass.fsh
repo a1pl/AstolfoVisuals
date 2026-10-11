@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 #moj_import <mre:common.glsl>
 
@@ -7,19 +7,21 @@ in vec2 TexCoord;
 in vec4 FragColor;
 
 uniform sampler2D Sampler0;
-uniform vec2 Size;
-uniform vec4 Radius;
-uniform float Smoothness;
-uniform float CornerSmoothness;
-uniform float GlobalAlpha;
+layout(std140) uniform MreParams {
+    vec4 Radius;
+    vec3 FresnelColor;
+    float FresnelPower;
+    vec2 Size;
+    float Smoothness;
+    float CornerSmoothness;
+    float GlobalAlpha;
+    float FresnelAlpha;
+    float BaseAlpha;
+    int FresnelInvert;
+    float FresnelMix;
+    float DistortStrength;
+};
 
-uniform float FresnelPower;
-uniform vec3 FresnelColor;
-uniform float FresnelAlpha;
-uniform float BaseAlpha;
-uniform bool FresnelInvert;
-uniform float FresnelMix;
-uniform float DistortStrength;
 
 out vec4 OutColor;
 
@@ -46,7 +48,7 @@ void main() {
     float edge_gradient = 1.0 - clamp(distToEdge / max_dist_norm, 0.0, 1.0);
 
     float fresnel;
-    float base = FresnelInvert ? edge_gradient : (1.0 - edge_gradient);
+    float base = FresnelInvert != 0 ? edge_gradient : (1.0 - edge_gradient);
 
     if (FresnelPower > 20.0) {
         fresnel = exp(FresnelPower * log(clamp(base, 0.001, 1.0)));

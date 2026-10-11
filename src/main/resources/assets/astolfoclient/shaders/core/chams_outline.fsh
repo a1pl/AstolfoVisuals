@@ -1,7 +1,8 @@
-#version 150
+#version 330
+
+#moj_import <minecraft:dynamictransforms.glsl>
 
 uniform sampler2D Sampler0;
-uniform vec4 ColorModulator;
 
 in vec2 texCoord0;
 out vec4 fragColor;

@@ -1,6 +1,6 @@
 package xyz.angames.astolfoclient.client.render.shader;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import xyz.angames.astolfoclient.client.compat.RenderSystem;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import net.fabricmc.api.EnvType;

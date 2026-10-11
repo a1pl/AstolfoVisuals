@@ -1,12 +1,15 @@
-#version 150
+#version 330
+
+layout(std140) uniform CustomUniforms {
+    vec2 uResolution;
+    float uDistortion;
+    float uProgress;
+    float uAlpha;
+    vec3 uThemeColor;
+};
 
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
-uniform vec2 uResolution;
-uniform float uDistortion;
-uniform float uProgress;
-uniform float uAlpha;
-uniform vec3 uThemeColor;
 
 in vec2 texCoord;
 in vec2 vCenterScreen;

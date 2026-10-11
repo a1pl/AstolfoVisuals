@@ -1,22 +1,25 @@
-#version 150
+#version 330
+
+#moj_import <minecraft:dynamictransforms.glsl>
+layout(std140) uniform CustomUniforms {
+    float uTime;
+    vec3 uColor1;
+    vec3 uColor2;
+    vec3 uBlockCenter;
+    float uGlowIntensity;
+    float uPulseSpeed;
+    float uPulseWidth;
+    float uDistortion;
+    float uChromatic;
+    float uFadeAlpha;
+    float uFillAlpha;
+    int uMode;
+};
 
 in vec4 vertexColor;
 in vec2 texCoord0;
 in vec3 worldPos;
 
-uniform vec4 ColorModulator;
-uniform float uTime;
-uniform vec3 uColor1;
-uniform vec3 uColor2;
-uniform vec3 uBlockCenter;
-uniform float uGlowIntensity;
-uniform float uPulseSpeed;
-uniform float uPulseWidth;
-uniform float uDistortion;
-uniform float uChromatic;
-uniform float uFadeAlpha;
-uniform float uFillAlpha;
-uniform int uMode;
 
 out vec4 fragColor;
 

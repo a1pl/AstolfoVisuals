@@ -1,14 +1,17 @@
-#version 150
+#version 330
 
 #moj_import <mre:common.glsl>
 
 in vec2 FragCoord; // normalized fragment coord relative to the primitive
 in vec4 FragColor;
 
-uniform vec2 Size; // rectangle size
-uniform vec4 Radius; // radius for each vertex
-uniform float Thickness; // border thickness
-uniform vec2 Smoothness; // internal and external edge smoothness
+
+layout(std140) uniform MreParams {
+    vec4 Radius;
+    vec2 Size;
+    vec2 Smoothness;
+    float Thickness;
+};
 
 out vec4 OutColor;
 
